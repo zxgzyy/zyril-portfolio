@@ -3,6 +3,7 @@ const startupProgress = document.querySelector(".startup-progress");
 const startupPercent = document.querySelector("#startup-percent");
 const startupBar = document.querySelector("#startup-bar");
 const startupSoundButton = document.querySelector("#startup-sound");
+const journeyTitle = document.querySelector(".journey-title");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 document.body.classList.add("intro-active");
@@ -11,6 +12,7 @@ const finishStartup = () => {
   startupProgress.setAttribute("aria-valuenow", "100");
   startupScreen.classList.add("is-done");
   document.body.classList.remove("intro-active");
+  journeyTitle.classList.add("is-typing");
 };
 
 const updateStartup = (percent) => {
