@@ -8,10 +8,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261127-typewriter-heading-3">
+  <link rel="stylesheet" href="styles.css?v=20261128-chapter-power-3">
 </head>
 <body>
-  <div class="startup-screen">
+  <div class="startup-screen is-waiting" role="dialog" aria-modal="true" aria-label="Portfolio startup" aria-hidden="true">
     <div class="startup-top">
       <div class="startup-mark">ZM<span>.</span></div>
       <button class="startup-sound" id="startup-sound" type="button" aria-pressed="false">♫ Enable audio</button>
@@ -24,13 +24,42 @@
     </div>
     <div class="startup-copy">
       <p>Personal E-Portfolio <span>·</span> 2026</p>
-      <h2>Learning<br><em>who I am.</em></h2>
+      <h2 tabindex="-1">Learning<br><em>who I am.</em></h2>
     </div>
     <div class="startup-progress" role="progressbar" aria-label="Loading portfolio" aria-valuemin="0" aria-valuemax="100" aria-valuenow="1">
       <div class="startup-progress-top"><span>Preparing portfolio</span><strong id="startup-percent">01%</strong></div>
       <div class="startup-track"><span id="startup-bar"></span></div>
     </div>
     <span class="startup-coordinates">ZYRIL JASFER S. MALDIZA BSIT 1B / UTS</span>
+  </div>
+  <div class="power-screen" id="power-screen" role="dialog" aria-modal="true" aria-labelledby="power-title">
+    <div class="power-screen-inner">
+      <p class="power-kicker">Portfolio system <span>·</span> offline</p>
+      <h1 id="power-title">Ready to meet<br><em>who I am?</em></h1>
+      <p class="power-description">Power on to begin my journey of self-discovery.</p>
+      <div class="power-control">
+        <svg class="power-arcs" viewBox="0 0 320 320" aria-hidden="true">
+          <path class="power-arc" d="M160 12 171 36 157 54 174 75 164 96 184 116 171 138 194 160"></path>
+          <path class="power-arc" d="M308 160 282 171 264 155 243 176 221 165 200 185 178 172"></path>
+          <path class="power-arc" d="M160 308 149 282 165 263 145 242 156 219 137 199 151 177"></path>
+          <path class="power-arc" d="M12 160 38 149 56 165 77 144 99 155 120 135 142 149"></path>
+          <path class="power-arc" d="M50 50 76 63 72 83 99 92 101 115 126 124"></path>
+          <path class="power-arc" d="M270 50 245 65 249 85 222 94 220 117 195 126"></path>
+          <path class="power-arc" d="M50 270 76 256 72 236 99 227 101 204 126 195"></path>
+          <path class="power-arc" d="M270 270 245 255 249 235 222 226 220 203 195 194"></path>
+        </svg>
+        <button class="power-button" id="power-button" type="button" aria-label="Power on the portfolio">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <path d="M24 5v17"></path>
+            <path d="M13.5 12.5a17 17 0 1 0 21 0"></path>
+          </svg>
+          <span>Power on</span>
+        </button>
+      </div>
+      <p class="power-hint">Click the button to enter</p>
+    </div>
+    <span class="power-corner power-corner--left" aria-hidden="true">SYS / 001</span>
+    <span class="power-corner power-corner--right" aria-hidden="true">Z.M. · UTS</span>
   </div>
   <div class="noise" aria-hidden="true"></div>
   <div class="site-progress" aria-hidden="true"></div>
@@ -74,13 +103,13 @@
     <section class="hero section" id="home">
       <div class="hero-copy reveal">
         <p class="eyebrow"><span class="status-dot"></span> Understanding the self · E-portfolio</p>
-        <h1 class="journey-title" aria-label="My Journey of Self-Discovery">
+        <h1 class="journey-title" aria-label="My Journey of Self-Discovery" tabindex="-1">
           <span class="title-line title-line--first" aria-hidden="true">My Journey of</span>
           <span class="title-line title-line--second" aria-hidden="true"><em>Self-Discovery</em><span class="typing-caret"></span></span>
         </h1>
         <p class="intro">A personal collection of becoming exploring the values, relationships, culture, and experiences that shape who I am.</p>
         <div class="hero-actions">
-          <a class="primary-button" href="#who-am-i">Begin the journey <span>↓</span></a>
+          <a class="primary-button" href="#chapters">Explore the chapters <span>↓</span></a>
           <span class="chapter-count">01 — 09 chapters</span>
         </div>
       </div>
@@ -105,6 +134,50 @@
       </div>
     </section>
 
+    <section class="chapter-index section" id="chapters" aria-labelledby="chapter-index-title">
+      <div class="chapter-index-heading reveal">
+        <div>
+          <p class="eyebrow"><span class="status-dot"></span> Choose your path / 01—09</p>
+          <h2 id="chapter-index-title">Explore my <em>chapters</em></h2>
+        </div>
+        <p>Pick any chapter to discover a different part of my story. You can explore them in any order.</p>
+      </div>
+      <div class="chapter-picker-grid">
+        <button class="chapter-picker" type="button" data-chapter-target="who-am-i" aria-controls="who-am-i" aria-expanded="false">
+          <span class="chapter-picker-number">01</span><span class="chapter-picker-copy"><strong>Who am I?</strong><small>The personal self</small></span><span class="chapter-picker-arrow" aria-hidden="true">+</span>
+        </button>
+        <button class="chapter-picker" type="button" data-chapter-target="philosophical" aria-controls="philosophical" aria-expanded="false">
+          <span class="chapter-picker-number">02</span><span class="chapter-picker-copy"><strong>What defines me?</strong><small>The philosophical self</small></span><span class="chapter-picker-arrow" aria-hidden="true">+</span>
+        </button>
+        <button class="chapter-picker" type="button" data-chapter-target="sociological" aria-controls="sociological" aria-expanded="false">
+          <span class="chapter-picker-number">03</span><span class="chapter-picker-copy"><strong>Me &amp; society</strong><small>The sociological self</small></span><span class="chapter-picker-arrow" aria-hidden="true">+</span>
+        </button>
+        <button class="chapter-picker" type="button" data-chapter-target="anthropological" aria-controls="anthropological" aria-expanded="false">
+          <span class="chapter-picker-number">04</span><span class="chapter-picker-copy"><strong>My cultural identity</strong><small>The anthropological self</small></span><span class="chapter-picker-arrow" aria-hidden="true">+</span>
+        </button>
+        <button class="chapter-picker" type="button" data-chapter-target="psychological" aria-controls="psychological" aria-expanded="false">
+          <span class="chapter-picker-number">05</span><span class="chapter-picker-copy"><strong>My inner world</strong><small>The psychological self</small></span><span class="chapter-picker-arrow" aria-hidden="true">+</span>
+        </button>
+        <button class="chapter-picker" type="button" data-chapter-target="physical" aria-controls="physical" aria-expanded="false">
+          <span class="chapter-picker-number">06</span><span class="chapter-picker-copy"><strong>Appreciating who I am</strong><small>The physical self</small></span><span class="chapter-picker-arrow" aria-hidden="true">+</span>
+        </button>
+        <button class="chapter-picker" type="button" data-chapter-target="digital" aria-controls="digital" aria-expanded="false">
+          <span class="chapter-picker-number">07</span><span class="chapter-picker-copy"><strong>Who am I online?</strong><small>The digital self</small></span><span class="chapter-picker-arrow" aria-hidden="true">+</span>
+        </button>
+        <button class="chapter-picker" type="button" data-chapter-target="future" aria-controls="future" aria-expanded="false">
+          <span class="chapter-picker-number">08</span><span class="chapter-picker-copy"><strong>Who will I become?</strong><small>My future self</small></span><span class="chapter-picker-arrow" aria-hidden="true">+</span>
+        </button>
+        <button class="chapter-picker" type="button" data-chapter-target="final-reflection" aria-controls="final-reflection" aria-expanded="false">
+          <span class="chapter-picker-number">09</span><span class="chapter-picker-copy"><strong>Final reflection</strong><small>What I carry forward</small></span><span class="chapter-picker-arrow" aria-hidden="true">+</span>
+        </button>
+      </div>
+    </section>
+
+    <div class="chapter-panels" id="chapter-panels">
+      <div class="chapter-stage-tools" id="chapter-stage-tools" hidden>
+        <p id="chapter-status" aria-live="polite">Choose a chapter to explore.</p>
+        <button class="chapter-back" id="chapter-back" type="button">← All chapters</button>
+      </div>
     <section class="identity-section chapter" id="who-am-i">
       <div class="chapter-heading reveal">
         <p class="chapter-number">01 / 09</p>
@@ -285,6 +358,7 @@
         <p>My journey toward self-understanding does not end with this course. There are still things I need to learn about myself. What matters is that I stay honest, accept my weaknesses, develop my strengths, and keep working toward becoming a better person.</p>
       </article>
     </section>
+    </div>
   </main>
 
   <footer>
@@ -299,6 +373,6 @@
     <a href="#home" aria-label="Back to top">↑</a>
   </footer>
 
-  <script src="script.js?v=20261127-typewriter-heading-1"></script>
+  <script src="script.js?v=20261128-chapter-power-3"></script>
 </body>
 </html>

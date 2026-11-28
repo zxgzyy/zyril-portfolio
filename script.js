@@ -1,18 +1,33 @@
 const startupScreen = document.querySelector(".startup-screen");
+const powerScreen = document.querySelector("#power-screen");
+const powerButton = document.querySelector("#power-button");
+const startupTitle = document.querySelector(".startup-copy h2");
 const startupProgress = document.querySelector(".startup-progress");
 const startupPercent = document.querySelector("#startup-percent");
 const startupBar = document.querySelector("#startup-bar");
 const startupSoundButton = document.querySelector("#startup-sound");
 const journeyTitle = document.querySelector(".journey-title");
+const chapterPanels = Array.from(document.querySelectorAll("#chapter-panels > .chapter"));
+const chapterTriggers = Array.from(document.querySelectorAll("[data-chapter-target]"));
+const chapterStageTools = document.querySelector("#chapter-stage-tools");
+const chapterStatus = document.querySelector("#chapter-status");
+const chapterIndex = document.querySelector("#chapters");
+const chapterBackButton = document.querySelector("#chapter-back");
+const pageRegions = Array.from(document.querySelectorAll("header, main, footer"));
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 document.body.classList.add("intro-active");
+pageRegions.forEach((region) => { region.inert = true; });
+chapterPanels.forEach((panel) => { panel.hidden = true; });
 
 const finishStartup = () => {
   startupProgress.setAttribute("aria-valuenow", "100");
   startupScreen.classList.add("is-done");
+  startupScreen.setAttribute("aria-hidden", "true");
   document.body.classList.remove("intro-active");
   journeyTitle.classList.add("is-typing");
+  pageRegions.forEach((region) => { region.inert = false; });
+  journeyTitle.focus({ preventScroll: true });
 };
 
 const updateStartup = (percent) => {
@@ -27,6 +42,7 @@ let startupAudioContext;
 let startupMasterGain;
 let startupSoundEnabled = false;
 let startupSoundAttempt = 0;
+let triggerStartupAudio = () => {};
 
 const playStartupSound = () => {
   const startAt = startupAudioContext.currentTime + 0.04;
@@ -61,7 +77,7 @@ if (!AudioContextConstructor) {
   startupSoundButton.disabled = true;
   startupSoundButton.textContent = "Sound unavailable";
 } else {
-  const startStartupSound = async (automatic = false) => {
+  const startStartupSound = async () => {
     const attempt = ++startupSoundAttempt;
     if (!startupAudioContext) {
       startupAudioContext = new AudioContextConstructor();
@@ -70,8 +86,8 @@ if (!AudioContextConstructor) {
       startupMasterGain.connect(startupAudioContext.destination);
     }
 
-    startupSoundButton.disabled = !automatic;
-    startupSoundButton.textContent = automatic ? "Starting audio" : "Starting sound";
+    startupSoundButton.disabled = false;
+    startupSoundButton.textContent = "Starting sound";
     try {
       const resume = startupAudioContext.resume().then(() => true);
       const resumed = await Promise.race([
@@ -88,7 +104,7 @@ if (!AudioContextConstructor) {
       if (attempt !== startupSoundAttempt) return;
       startupSoundButton.textContent = "♫ Tap for audio";
       startupSoundButton.disabled = false;
-      if (!automatic) console.error("Could not start the portfolio intro sound.", error);
+      console.error("Could not start the portfolio intro sound.", error);
       return;
     }
 
@@ -107,6 +123,8 @@ if (!AudioContextConstructor) {
     }, 4400);
   };
 
+  triggerStartupAudio = startStartupSound;
+
   startupSoundButton.addEventListener("click", () => {
     if (startupSoundEnabled) {
       startupMasterGain.gain.setTargetAtTime(0, startupAudioContext.currentTime, 0.025);
@@ -119,14 +137,19 @@ if (!AudioContextConstructor) {
     }
     startStartupSound();
   });
-
-  if (!reducedMotion) window.setTimeout(() => startStartupSound(true), 0);
 }
 
-if (reducedMotion) {
-  updateStartup(100);
-  window.setTimeout(finishStartup, 180);
-} else {
+const runStartup = () => {
+  powerScreen.setAttribute("aria-hidden", "true");
+  startupScreen.classList.remove("is-waiting");
+  startupScreen.removeAttribute("aria-hidden");
+  startupTitle.focus({ preventScroll: true });
+  if (reducedMotion) {
+    updateStartup(100);
+    window.setTimeout(finishStartup, 180);
+    return;
+  }
+
   const startupDuration = 4400;
   const startedAt = performance.now();
 
@@ -143,7 +166,61 @@ if (reducedMotion) {
   };
 
   window.requestAnimationFrame(animateStartup);
-}
+};
+
+powerButton.addEventListener("click", () => {
+  if (powerButton.disabled) return;
+  powerButton.disabled = true;
+  powerScreen.classList.add("is-powering");
+  if (!reducedMotion) triggerStartupAudio();
+
+  window.setTimeout(() => {
+    powerScreen.classList.add("is-done");
+    runStartup();
+  }, reducedMotion ? 0 : 1000);
+});
+
+const setActiveChapter = (chapterId, shouldScroll = true) => {
+  const panel = chapterPanels.find((chapter) => chapter.id === chapterId);
+  if (!panel) return;
+
+  const activePanel = panel.hidden ? panel : null;
+  chapterPanels.forEach((chapter) => { chapter.hidden = chapter !== activePanel; });
+  chapterTriggers.forEach((trigger) => {
+    trigger.setAttribute("aria-expanded", String(trigger.dataset.chapterTarget === activePanel?.id));
+  });
+  chapterStageTools.hidden = !activePanel;
+
+  if (activePanel) {
+    const trigger = chapterTriggers.find((item) => item.dataset.chapterTarget === activePanel.id);
+    const title = trigger?.querySelector("strong")?.textContent;
+    chapterStatus.textContent = title ? `Now exploring: ${title}` : "Chapter opened.";
+    const heading = activePanel.querySelector(".chapter-heading h2");
+    heading.setAttribute("tabindex", "-1");
+    heading.focus({ preventScroll: true });
+  } else {
+    chapterStatus.textContent = "Choose a chapter to explore.";
+  }
+
+  if (shouldScroll) {
+    const destination = activePanel ? chapterStageTools : chapterIndex;
+    window.requestAnimationFrame(() => {
+      destination.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+    });
+  }
+};
+
+chapterTriggers.forEach((trigger) => {
+  trigger.addEventListener("click", () => setActiveChapter(trigger.dataset.chapterTarget));
+});
+
+chapterBackButton.addEventListener("click", () => {
+  const activePanel = chapterPanels.find((panel) => !panel.hidden);
+  if (!activePanel) return;
+  const activeTrigger = chapterTriggers.find((trigger) => trigger.dataset.chapterTarget === activePanel.id);
+  setActiveChapter(activePanel.id);
+  activeTrigger?.focus({ preventScroll: true });
+});
 
 const navWrap = document.querySelector(".nav-wrap");
 const menuButton = document.querySelector(".menu-button");
@@ -163,7 +240,12 @@ menuButton.addEventListener("click", () => {
 });
 
 navLinks.querySelectorAll("a").forEach((link) => {
-  link.addEventListener("click", () => {
+  link.addEventListener("click", (event) => {
+    const chapterId = link.getAttribute("href")?.slice(1);
+    if (chapterPanels.some((panel) => panel.id === chapterId)) {
+      event.preventDefault();
+      setActiveChapter(chapterId);
+    }
     navLinks.classList.remove("open");
     menuButton.setAttribute("aria-expanded", "false");
   });
