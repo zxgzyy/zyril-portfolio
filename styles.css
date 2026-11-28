@@ -721,7 +721,7 @@ body::before {
   position: fixed;
   top: var(--pointer-y, -100px);
   left: var(--pointer-x, -100px);
-  z-index: 40;
+  z-index: 120;
   width: 24px;
   height: 24px;
   opacity: 0;
